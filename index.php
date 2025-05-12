@@ -2,29 +2,40 @@
 
 declare(strict_types=1);
 
-$books = [
-    [
-        'name' => 'PHP',
-        'author' => 'miguel Pereira',
-        'releasedYear' => 100,
-        'purchaseUrl' => 'http://www.php.net'
-    ],
-    [
-        'name' => 'Livro de Programacao de melhores praticas do nuno maduro',
-        'author' => 'nuno maduro',
-        'releasedYear' => 102,
-        'purchaseUrl' => 'http://example.com'
-    ],
-    [
-        'name' => 'Php a melhor linguagem de programaca',
-        'author' => 'nuno maduro',
-        'releasedYear' => 103,
-        'purchaseUrl' => 'http://www.php.net'
-    ]
+$userData = [
+    'name' => 'Miguel',
+    'email' => 'miguel@example.com',
+    'password' => 'password',
 ];
 
-$filteredBooksByAuthor = array_filter($books, function ($book) {
-    return $book['author'] === 'nuno maduro';
-});
+$createUser = [];
 
-require "index.view.php";
+function sendWelcomeEmail(): void
+{
+    echo 'Email sent';
+}
+
+function logUser(string $email, string $password): void
+{
+    echo 'User logged';
+}
+
+function registerUser(array $data, array &$userList): void
+{
+    if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+        echo 'Invalid email';
+        return;
+    }
+
+    $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+
+    $userList[] = $data;
+
+    logUser($data['email'], $data['password']);
+    sendWelcomeEmail();
+
+    header('Location: dashboard.php');
+    exit;
+}
+
+registerUser($userData, $createUser);
